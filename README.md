@@ -1,6 +1,36 @@
 # min-webpack
 build own's webpack
 
+## AST
+
+![image](https://user-images.githubusercontent.com/16753554/70860867-fae7b780-1f61-11ea-9f0c-0fb4d12c3c44.png)
+
+- 代码风格,语法的检查,IDE中的错误提示,格式化,自动补全等等
+- 优化变更代码，代码压缩,Tree-Sharking等等
+- es6转es5,以及TypeScript、JSX等转化为原生Javascript等等
+
+## AST解析语法树
+
+![2](https://user-images.githubusercontent.com/16753554/70860748-9546fb80-1f60-11ea-861c-d12267ee2208.png)
+
+这一步就是parse的内容，解析读取到的模块的内容。
+
+- 替换require，替换依赖的路径，把修改后的模板放进sourceCode
+- 把依赖放进dependencies数组中
+
+用到了几个库来做这件事：
+
+- babylon 主要是把源码解析成AST
+- @babel/traverse 遍历节点（遍历到对应的节点）以**深度优先**的形式遍历AST，并进行修改和转化
+- @babel/types 替换遍历到的节点
+- @babel/generator 替换好的结果生成,根据AST生成新的代码
+- (traverse和generator是es6模块 引用的时候要require(‘@babel/traverse’).default 不然默认导出的是一个对象)
+- @babel/core Babel核心库，被很多babel配套设施依赖，用于加载 preset 和 plugin
+
+Babel转化的核心链路：原始代码-原始AST -转化后的AST-转化后的代码
+
+
+
 ## 整体流程分析
 
 1、读取入口文件。

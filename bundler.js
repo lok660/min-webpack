@@ -1,10 +1,13 @@
 const path = require('path')
 const fs = require('fs')
-const babylon = require("@babel/parser");
-const traverse = require("@babel/traverse").default;
-const babel = require("@babel/core");
+//  babylon 主要将源码转成 AST
+const babylon = require("@babel/parser")
+//  遍历以及更新 AST node
+const traverse = require("@babel/traverse").default
+//  将 AST node 转换成 ES5 code
+const babel = require("@babel/core")
 
-let ID = 0;
+let ID = 0
 
 //  读取文件信息,并获得当前js文件的依赖关系
 function createAsset (filename) {
@@ -24,7 +27,7 @@ function createAsset (filename) {
     //  每次import语法的时候
     ImportDeclaration: ({ node }) => {
       //  把依赖的模块加入到数组中
-      //  例如 如果当前js文件 有一句 import message from './message.js'， 
+      //  例如: 如果当前js文件 有一句 import message from './message.js'， 
       //  './message.js' === node.source.value
       dependencies.push(node.source.value)
     }
@@ -43,7 +46,7 @@ function createAsset (filename) {
     filename,
     dependencies,
     code
-  };
+  }
 }
 
 //  从入口开始分析所有的依赖项,形成依赖图,采用广度遍历
@@ -75,6 +78,7 @@ function createGraph (entry) {
 
     })
   }
+
   return queue
 }
 
@@ -116,6 +120,7 @@ function bundle (graph) {
 
       //  执行入口文件
       require(0)
+
     })({${modules}})
   `
 
