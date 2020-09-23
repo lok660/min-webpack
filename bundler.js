@@ -49,9 +49,38 @@ function createAsset (filename) {
 //  从入口开始分析所有的依赖项,形成依赖图,采用广度遍历
 function createGraph (entry) {
 
+  const mainAsset = createAsset(entry)
+
+  //  定义一个保存依赖项的数组(遍历,从第一个example/entry.js返回的信息)
+  const queue = [mainAsset]
+
+  for (const asset of queue) {
+    const dirname = path.dirname(asset.filename)
+
+    //  定义个保存子依赖项的属性(类似  {'./message.js' : 1} )
+    asset.mapping = {}
+
+    asset.dependencies.forEach(relativePath => {
+
+      const absolutePath = path.join(dirname, relativePath)
+
+      //  获得子模块的依赖项,代码,模块id,文件名
+      const child = createAsset(absolutePath)
+
+      //  给子依赖项赋值
+      asset.mapping[relativePath] = child.id
+
+      //  将子依赖项加入队列中,循环处理
+      queue.push(child)
+
+    })
+  }
+  return queue
 }
 
 //  根据生成的依赖关系图,生成浏览器可执行文件
 function bundle (graph) {
+
+
 
 }
