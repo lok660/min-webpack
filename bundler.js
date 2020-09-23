@@ -81,6 +81,50 @@ function createGraph (entry) {
 //  根据生成的依赖关系图,生成浏览器可执行文件
 function bundle (graph) {
 
+  let modules = ''
 
+  graph.forEach(mod => {
+    //  循环依赖关系,并把每个模块中的代码存在function作用域里
+    modules +=
+      `${mod.id}:[
+      function (require,module,exports) {
+        ${mod.code}
+      },
+      ${JSON.stringify(mod.mapping)}
+    ]`
+  })
 
+  // require, module, exports 不能直接在浏览器中使用，这里模拟了模块加载，执行，导出操作
+  const result = `
+    (function(modules){
+      //  创建一个require()函数,接收一个 模块ID ,这里模拟了模块加载,执行,导出操作
+      function require(id) {
+        const [fn,mapping] = modules[id]
+
+        function localRequire(relativePath) {
+          //  根据mapping的路径,找到对应的模块id
+          return require(mapping[relativePath])
+        }
+
+        const module = {exports: {}}
+
+        //  执行转换的代码后,并输出
+        fn(localRequire,module,module.exports)
+
+        return modules.exports
+      }
+
+      //  执行入口文件
+      require(0)
+    })({${modules}})
+  `
+
+  return result
 }
+
+const graph = createGraph('./example/entry.js')
+
+const result = bundle(graph)
+
+//  打包生成文件
+fs.writeFileSync('dist/output.js', result)
