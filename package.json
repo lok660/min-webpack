@@ -1,0 +1,26 @@
+{
+  "name": "min-webpack",
+  "version": "1.0.0",
+  "description": "build own's webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lok660/min-webpack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lok660/min-webpack/issues"
+  },
+  "homepage": "https://github.com/lok660/min-webpack#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/parser": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/traverse": "^7.11.5"
+  }
+}
